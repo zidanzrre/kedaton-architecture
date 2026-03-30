@@ -1,22 +1,43 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 
 export default function Home() {
-  const panoRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     let viewer: any;
 
-    const init = async () => {
-      const PANOLENS = await import("panolens");
+    const loadScripts = () => {
+      return new Promise((resolve) => {
+        const script1 = document.createElement("script");
+        script1.src =
+          "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
 
-      if (!panoRef.current) return;
+        const script2 = document.createElement("script");
+        script2.src =
+          "https://cdn.jsdelivr.net/npm/panolens@0.12.0/build/panolens.min.js";
+
+        script1.onload = () => {
+          document.body.appendChild(script2);
+        };
+
+        script2.onload = () => resolve(true);
+
+        document.body.appendChild(script1);
+      });
+    };
+
+    const init = async () => {
+      await loadScripts();
+
+      const PANOLENS = (window as any).PANOLENS;
+
+      const container = document.getElementById("pano");
+      if (!container) return;
 
       const panorama = new PANOLENS.ImagePanorama("/image1.jpeg");
 
       viewer = new PANOLENS.Viewer({
-        container: panoRef.current,
+        container: container,
         autoRotate: true,
         autoRotateSpeed: 0.2,
         controlBar: false,
@@ -25,15 +46,13 @@ export default function Home() {
       viewer.add(panorama);
     };
 
-    const timer = setTimeout(init, 500);
+    setTimeout(init, 300);
 
     return () => {
-      clearTimeout(timer);
       if (viewer) viewer.dispose();
     };
   }, []);
 
-  // SCROLL FUNCTIONS (UX FLOW)
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
@@ -43,12 +62,10 @@ export default function Home() {
 
       {/* HERO */}
       <section className="h-screen relative flex items-center justify-center text-center px-4">
-
         <img
           src="https://images.unsplash.com/photo-1505691723518-36a5ac3b2c5b"
           className="absolute inset-0 w-full h-full object-cover"
         />
-
         <div className="absolute inset-0 bg-black/60"></div>
 
         <div className="relative z-10 max-w-2xl">
@@ -71,7 +88,7 @@ export default function Home() {
 
       {/* STORY */}
       <section id="story" className="py-24 md:py-32 text-center px-6 scroll-mt-20">
-        <h2 className="text-xl md:text-3xl max-w-3xl mx-auto leading-relaxed opacity-90">
+        <h2 className="text-xl md:text-3xl max-w-3xl mx-auto leading-relaxed">
           Every space begins with a vision. We transform ideas into meaningful architecture that connects people, environment, and experience.
         </h2>
 
@@ -117,16 +134,14 @@ export default function Home() {
 
         <div className="flex justify-center">
           <div className="relative w-full md:w-[90%]">
-
             <div
-              ref={panoRef}
+              id="pano"
               className="w-full h-[350px] md:h-[500px] bg-black rounded-xl overflow-hidden"
             />
 
             <div className="absolute bottom-4 left-4 bg-black/50 px-4 py-2 rounded-lg text-sm">
               Drag to explore
             </div>
-
           </div>
         </div>
 
@@ -146,7 +161,7 @@ export default function Home() {
           Let’s Build Your Future Space
         </h2>
 
-        <p className="opacity-70 mb-6 text-sm md:text-base">
+        <p className="opacity-70 mb-6">
           Collaborate with us to bring your vision to life
         </p>
 
