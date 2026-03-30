@@ -31,7 +31,7 @@ export default function Home() {
 
     const script1 = document.createElement("script");
     script1.src =
-      "https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js";
+      "https://cdnjs.cloudflare.com/ajax/libs/three.js/r105/three.min.js";
 
     const script2 = document.createElement("script");
     script2.src =
