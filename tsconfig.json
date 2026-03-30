@@ -20,6 +20,7 @@
     ],
     "paths": {
       "@/*": ["./*"]
+      "typeRoots": ["./types", "./node_modules/@types"]
     }
   },
   "include": [
@@ -31,10 +32,4 @@
     "**/*.mts"
   ],
   "exclude": ["node_modules"]
-}
-{
-  "compilerOptions": {
-    ...
-    "typeRoots": ["./types", "./node_modules/@types"]
-  }
 }

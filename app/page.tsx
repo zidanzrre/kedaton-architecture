@@ -9,7 +9,6 @@ export default function Home() {
     let viewer: any;
 
     const init = async () => {
-      // @ts-ignore
       const PANOLENS = await import("panolens");
 
       if (!panoRef.current) return;
